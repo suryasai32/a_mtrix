@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Node Incidence Matrix</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    input[type="text"] {
+        width: 100px;
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input[type="button"] {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Node Incidence Matrix</h2>
+    <div>
+        <label for="numLines">Total Number of Lines:</label>
+        <input type="text" id="numLines">
+        <input type="button" value="Create Inputs" onclick="createInputFields()">
+    </div>
+    <div id="inputFields"></div>
+    <input type="button" value="Generate Matrix" onclick="generateMatrix()">
+    <table id="matrix"></table>
+</div>
+
+<script>
+    function createInputFields() {
+        const numLines = parseInt(document.getElementById('numLines').value);
+        const inputFields = document.getElementById('inputFields');
+        inputFields.innerHTML = '';
+
+        for (let i = 1; i <= numLines; i++) {
+            const div = document.createElement('div');
+
+            const fromLabel = document.createElement('label');
+            fromLabel.textContent = `From Node for Line ${i}: `;
+            const fromInput = document.createElement('input');
+            fromInput.setAttribute('type', 'text');
+            fromInput.setAttribute('id', `from_${i}`);
+            div.appendChild(fromLabel);
+            div.appendChild(fromInput);
+
+            const toLabel = document.createElement('label');
+            toLabel.textContent = `To Node for Line ${i}: `;
+            const toInput = document.createElement('input');
+            toInput.setAttribute('type', 'text');
+            toInput.setAttribute('id', `to_${i}`);
+            div.appendChild(toLabel);
+            div.appendChild(toInput);
+
+            inputFields.appendChild(div);
+        }
+    }
+
+    function generateMatrix() {
+        const numLines = parseInt(document.getElementById('numLines').value);
+        const matrixTable = document.getElementById('matrix');
+        matrixTable.innerHTML = '';
+
+        const nodes = new Set();
+        const incidenceMatrix = {};
+
+        for (let i = 1; i <= numLines; i++) {
+            const from = parseInt(document.getElementById(`from_${i}`).value);
+            const to = parseInt(document.getElementById(`to_${i}`).value);
+
+            nodes.add(from);
+            nodes.add(to);
+
+            incidenceMatrix[i] = {};
+
+            for (let j = 1; j <= nodes.size; j++) {
+                incidenceMatrix[i][j] = 0;
+            }
+
+            incidenceMatrix[i][from] = 1;
+            incidenceMatrix[i][to] = -1;
+        }
+
+        // Create headers row with node numbers
+        const headersRow = document.createElement('tr');
+        headersRow.appendChild(document.createElement('th')); // Empty corner cell
+        nodes.forEach(node => {
+            const th = document.createElement('th');
+            th.textContent = `Node ${node}`;
+            headersRow.appendChild(th);
+        });
+        matrixTable.appendChild(headersRow);
+
+        // Create matrix rows with line numbers
+        for (let i = 1; i <= numLines; i++) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.textContent = `Line ${i}`;
+            tr.appendChild(td);
+
+            nodes.forEach(node => {
+                const value = incidenceMatrix[i][node] || 0;
+                const td = document.createElement('td');
+                td.textContent = value;
+                tr.appendChild(td);
+            });
+
+            matrixTable.appendChild(tr);
+        }
+    }
+</script>
+</body>
+</html>
