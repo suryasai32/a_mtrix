@@ -57,10 +57,6 @@
         <input type="button" value="Create Inputs" onclick="createInputFields()">
     </div>
     <div id="inputFields"></div>
-    <div>
-        <label for="referenceNode">Reference Node:</label>
-        <input type="text" id="referenceNode">
-    </div>
     <input type="button" value="Generate Matrix" onclick="generateMatrix()">
     <table id="matrix"></table>
 </div>
@@ -119,18 +115,13 @@
             incidenceMatrix[i][to] = -1;
         }
 
-        const referenceNode = parseInt(document.getElementById('referenceNode').value);
-        const referenceNodeIndex = Array.from(nodes).indexOf(referenceNode) + 1;
-
         // Create headers row with node numbers
         const headersRow = document.createElement('tr');
         headersRow.appendChild(document.createElement('th')); // Empty corner cell
         nodes.forEach(node => {
-            if (node !== referenceNode) {
-                const th = document.createElement('th');
-                th.textContent = `Node ${node}`;
-                headersRow.appendChild(th);
-            }
+            const th = document.createElement('th');
+            th.textContent = `Node ${node}`;
+            headersRow.appendChild(th);
         });
         matrixTable.appendChild(headersRow);
 
@@ -142,12 +133,10 @@
             tr.appendChild(td);
 
             nodes.forEach(node => {
-                if (node !== referenceNode) {
-                    const value = incidenceMatrix[i][node] || 0;
-                    const td = document.createElement('td');
-                    td.textContent = value;
-                    tr.appendChild(td);
-                }
+                const value = incidenceMatrix[i][node] || 0;
+                const td = document.createElement('td');
+                td.textContent = value;
+                tr.appendChild(td);
             });
 
             matrixTable.appendChild(tr);
